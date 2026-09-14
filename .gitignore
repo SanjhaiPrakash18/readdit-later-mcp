@@ -1,0 +1,4 @@
+node_modules/
+test-output.mjs
+*.log
+.DS_Store

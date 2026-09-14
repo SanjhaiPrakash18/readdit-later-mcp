@@ -1,0 +1,28 @@
+{
+  "name": "readdit-later-mcp",
+  "version": "1.1.0",
+  "mcpName": "io.github.sanjhaiprakash18/readdit-later",
+  "description": "MCP server for Readdit Later — manage your Reddit saves from Claude, Cursor, and other AI tools",
+  "type": "module",
+  "bin": {
+    "readdit-later-mcp": "./bin/cli.js"
+  },
+  "main": "./src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "ws": "^8.18.0"
+  },
+  "keywords": ["mcp", "readdit-later", "reddit", "bookmarks", "claude", "cursor"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanjhaiprakash18/readdit-later-mcp.git"
+  },
+  "homepage": "https://readditlater.in/mcp",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
