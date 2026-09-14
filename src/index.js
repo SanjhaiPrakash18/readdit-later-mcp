@@ -9,7 +9,7 @@ const bridge = new Bridge(store);
 
 const server = new McpServer({
   name: 'readdit-later',
-  version: '1.1.0'
+  version: '1.1.1'
 });
 
 registerTools(server, store, bridge);

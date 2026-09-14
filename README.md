@@ -1,87 +1,153 @@
-# Readdit Later MCP Server
+# MCP Registry
 
-Search, organize, and chat with your saved Reddit posts from Claude, Cursor, Windsurf, and any MCP-compatible AI tool.
+The MCP registry provides MCP clients with a list of MCP servers, like an app store for MCP servers.
 
-Readdit Later is a Chrome extension that backs up and organizes your saved Reddit posts and comments — past Reddit's 1,000-item limit. This MCP server connects that library to your AI tools, so your saves become something you can actually use instead of a pile you never revisit.
+[**📤 Publish my MCP server**](docs/modelcontextprotocol-io/quickstart.mdx) | [**⚡️ Live API docs**](https://registry.modelcontextprotocol.io/docs) | [**👀 Ecosystem vision**](docs/design/ecosystem-vision.md) | 📖 **[Full documentation](./docs)**
 
-- Website: https://readditlater.in/mcp
-- Chrome extension: https://chromewebstore.google.com/detail/jdceogapnjfcfdklbpnllbmnjbfmfejk
-- Privacy policy: https://sanjhaiprakash18.github.io/Readdit-Later-Privacy-Policy/
+## Development Status
 
-## What you can do
+**2025-10-24 update**: The Registry API has entered an **API freeze (v0.1)** 🎉. For the next month or more, the API will remain stable with no breaking changes, allowing integrators to confidently implement support. This freeze applies to v0.1 while development continues on v0. We'll use this period to validate the API in real-world integrations and gather feedback to shape v1 for general availability. Thank you to everyone for your contributions and patience—your involvement has been key to getting us here!
 
-- Semantic search across every saved post and comment — "find that post about negotiating a raise" works even when the title says something completely different
-- Filter by subreddit, author, label, read status, content type, score, or date range
-- Get reading recommendations from your unread backlog
-- Analyze your library: topic clusters, save patterns, cross-subreddit connections
-- Label posts, add notes, mark read, and manage collections by asking in plain language
-- Export to JSON, CSV, Markdown, HTML, Obsidian, or sync to Notion
+**2025-09-08 update**: The registry has launched in preview 🎉 ([announcement blog post](https://blog.modelcontextprotocol.io/posts/2025-09-08-mcp-registry-preview/)). While the system is now more stable, this is still a preview release and breaking changes or data resets may occur. A general availability (GA) release will follow later. We'd love your feedback in [GitHub discussions](https://github.com/modelcontextprotocol/registry/discussions/new?category=ideas) or in the [#registry-dev Discord](https://discord.com/channels/1358869848138059966/1369487942862504016) ([joining details here](https://modelcontextprotocol.io/community/communication)).
 
-## Two ways to connect
+Registry Working Group:
+- **Radoslav (Rado) Dimitrov** (Stacklok) [@rdimitrov](https://github.com/rdimitrov) - WG Lead
+- **Tadas Antanavicius** (PulseMCP) [@tadasant](https://github.com/tadasant)
+- **Bob Dickinson** (TeamSpark) [@BobDickinson](https://github.com/BobDickinson)
+- **Preeti (Pree) Dewani** (Ravenmail) [@pree-dew](https://github.com/pree-dew)
 
-### Remote connector (Claude web, desktop & mobile)
+## Contributing
 
-1. Install the Readdit Later extension and let your saves sync.
-2. In the extension, click **Connect to AI** in the sidebar, then **Create my private link**.
-3. In Claude, go to **Settings → Connectors → Add custom connector** and paste:
+We use multiple channels for collaboration - see [modelcontextprotocol.io/community/communication](https://modelcontextprotocol.io/community/communication).
 
-```
-https://reddit-later-server.vercel.app/mcp
-```
+Often (but not always) ideas flow through this pipeline:
 
-4. Click **Connect** and sign in with the access code shown in the extension.
+- **[Discord](https://modelcontextprotocol.io/community/communication)** - Real-time community discussions
+- **[Discussions](https://github.com/modelcontextprotocol/registry/discussions)** - Propose and discuss product/technical requirements
+- **[Issues](https://github.com/modelcontextprotocol/registry/issues)** - Track well-scoped technical work  
+- **[Pull Requests](https://github.com/modelcontextprotocol/registry/pulls)** - Contribute work towards issues
 
-Claude Code users can add it from the terminal instead:
+### Quick start:
 
-```
-claude mcp add --transport http readdit-later https://reddit-later-server.vercel.app/mcp
-```
+#### Pre-requisites
 
-### Local server (Claude Desktop, Cursor, Windsurf)
+- **Docker**
+- **Go 1.24.x**
+- **ko** - Container image builder for Go ([installation instructions](https://ko.build/install/))
+- **golangci-lint v2.4.0**
 
-One command configures your tools automatically:
+#### Running the server
 
-```
-npx readdit-later-mcp setup
+```bash
+# Start full development environment
+make dev-compose
 ```
 
-Restart your AI tool and keep Chrome open — the extension supplies live data, with an offline cache as fallback.
+This starts the registry at [`localhost:8080`](http://localhost:8080) with PostgreSQL. The database uses ephemeral storage and is reset each time you restart the containers, ensuring a clean state for development and testing.
 
-Manual configuration, if you prefer:
+**Note:** The registry uses [ko](https://ko.build) to build container images. The `make dev-compose` command automatically builds the registry image with ko and loads it into your local Docker daemon before starting the services.
 
-```json
-{
-  "mcpServers": {
-    "readdit-later": {
-      "command": "npx",
-      "args": ["readdit-later-mcp"]
-    }
-  }
-}
+By default, the registry seeds from the production API with a filtered subset of servers (to keep startup fast). This ensures your local environment mirrors production behavior and all seed data passes validation. For offline development you can seed from a file without validation with `MCP_REGISTRY_SEED_FROM=data/seed.json MCP_REGISTRY_ENABLE_REGISTRY_VALIDATION=false make dev-compose`.
+
+The setup can be configured with environment variables in [docker-compose.yml](./docker-compose.yml) - see [.env.example](./.env.example) for a reference.
+
+<details>
+<summary>Alternative: Running a pre-built Docker image</summary>
+
+Pre-built Docker images are automatically published to GitHub Container Registry. Note that the image does not bundle PostgreSQL, so you need to run your own and point the registry at it via `MCP_REGISTRY_DATABASE_URL` (see [docker-compose.yml](./docker-compose.yml) for a working example):
+
+```bash
+# Run latest stable release
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:latest
+
+# Run latest from main branch (continuous deployment)
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main
+
+# Run specific release version
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:v1.0.0
+
+# Run development build from main branch
+docker run -p 8080:8080 ghcr.io/modelcontextprotocol/registry:main-20250906-abc123d
 ```
 
-## Tools
+**Available tags:** 
+- **Releases**: `latest`, `v1.0.0`, `v1.1.0`, etc.
+- **Continuous**: `main` (latest main branch build)
+- **Development**: `main-<date>-<sha>` (specific commit builds)
 
-The local server exposes 20 tools. All tools carry MCP annotations — read tools are marked read-only, and destructive actions are flagged and require explicit confirmation.
+</details>
 
-| Category | Tools |
-| --- | --- |
-| Read | `search_posts`, `get_post`, `get_stats`, `list_subreddits`, `list_labels`, `list_collections`, `get_insights`, `connection_status` |
-| Write | `label_posts`, `remove_label`, `mark_read`, `add_note`, `delete_posts`, `create_collection`, `add_to_collection`, `remove_from_collection`, `delete_collection` |
-| Export | `export_posts` (JSON, CSV, Markdown, HTML, Obsidian) |
-| Notion | `sync_to_notion`, `export_to_notion` |
+#### Publishing a server
 
-The remote connector exposes an extended search and insight toolset (semantic search, recommendations, expertise map, cross-connections, debates) plus the same core actions.
+To publish a server, we've built a simple CLI. You can use it with:
 
-## Requirements
+```bash
+# Build the latest CLI
+make publisher
 
-- Node.js 18+
-- The Readdit Later Chrome extension with a Pro or Lifetime plan (AI tool access is a premium feature)
+# Use it!
+./bin/mcp-publisher --help
+```
 
-## How it works
+See [the publisher guide](./docs/modelcontextprotocol-io/quickstart.mdx) for more details.
 
-The local server is a thin bridge: it connects to the Readdit Later extension over a local WebSocket for live data and falls back to a local cache when Chrome is closed. Your library, sync engine, and search live in the extension and the Readdit Later service — this package is the MCP adapter.
+#### Other commands
 
-## License
+```bash
+# Run lint, unit tests and integration tests
+make check
+```
 
-MIT
+There are also a few more helpful commands for development. Run `make help` to learn more, or look in [Makefile](./Makefile).
+
+<!--
+For Claude and other AI tools: Always prefer make targets over custom commands where possible.
+-->
+
+## Architecture
+
+### Project Structure
+
+```
+├── cmd/                     # Application entry points
+│   └── publisher/           # Server publishing tool
+├── data/                    # Seed data
+├── deploy/                  # Deployment configuration (Pulumi)
+├── docs/                    # Documentation
+├── internal/                # Private application code
+│   ├── api/                 # HTTP handlers and routing
+│   ├── auth/                # Authentication (GitHub OAuth, JWT, namespace blocking)
+│   ├── config/              # Configuration management
+│   ├── database/            # Data persistence (PostgreSQL)
+│   ├── service/             # Business logic
+│   ├── telemetry/           # Metrics and monitoring
+│   └── validators/          # Input validation
+├── pkg/                     # Public packages
+│   ├── api/                 # API types and structures
+│   │   └── v0/              # Version 0 API types
+│   └── model/               # Data models for server.json
+├── scripts/                 # Development and testing scripts
+├── tests/                   # Integration tests
+└── tools/                   # CLI tools and utilities
+    └── validate-*.sh        # Schema validation tools
+```
+
+### Authentication
+
+Publishing supports multiple authentication methods:
+- **GitHub OAuth** - For publishing by logging into GitHub
+- **GitHub OIDC** - For publishing from GitHub Actions
+- **DNS verification** - For proving ownership of a domain and its subdomains
+- **HTTP verification** - For proving ownership of a domain
+
+The registry validates namespace ownership when publishing. E.g. to publish...:
+- `io.github.domdomegg/my-cool-mcp` you must login to GitHub as `domdomegg`, or be in a GitHub Action on domdomegg's repos
+- `me.adamjones/my-cool-mcp` you must prove ownership of `adamjones.me` via DNS or HTTP challenge
+
+## Community Projects
+
+Check out [community projects](docs/community-projects.md) to explore notable registry-related work created by the community.
+
+## More documentation
+
+See the [documentation](./docs) for more details if your question has not been answered here!
