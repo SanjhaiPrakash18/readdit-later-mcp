@@ -28,7 +28,7 @@
     "type": "git",
     "url": "git+https://github.com/sanjhaiprakash18/readdit-later-mcp.git"
   },
-  "homepage": "https://readditlater.in/mcp",
+  "homepage": "https://readditlater.com/mcp-server-for-reddit-saves",
   "engines": {
     "node": ">=18.0.0"
   }

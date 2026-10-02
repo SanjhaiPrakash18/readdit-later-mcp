@@ -7,7 +7,7 @@
     "source": "github"
   },
   "version": "1.1.1",
-  "websiteUrl": "https://readditlater.in",
+  "websiteUrl": "https://readditlater.com/mcp-server-for-reddit-saves",
   "packages": [
     {
       "registryType": "npm",
