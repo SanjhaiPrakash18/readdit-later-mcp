@@ -214,7 +214,7 @@ export function registerTools(server, store, bridge) {
 
   server.tool(
     'delete_posts',
-    'Delete one or more saved posts permanently',
+    'Remove one or more posts from the Readdit Later library (does not unsave them on Reddit)',
     {
       post_ids: z.array(z.string()).describe('Array of post IDs to delete')
     },

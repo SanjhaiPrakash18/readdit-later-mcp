@@ -1,8 +1,8 @@
 # Readdit Later MCP Server
 
-The only MCP server built for your **personal Reddit saved posts**. Search, organize, label, export, and manage your Reddit saves from Claude, Cursor, Windsurf, or any MCP-compatible AI tool.
+An MCP server for your **personal Reddit saved posts**. Search, organize, label, export, and manage your Reddit saves from Claude, Cursor, Windsurf, or any MCP-compatible AI tool.
 
-Other Reddit MCP servers browse public subreddits. This one connects to **your** save library - semantic search, labeling, notes, collections, and export to Notion/CSV/Markdown, all from inside your AI workflow.
+Most Reddit MCP servers browse public subreddits. This one connects to **your** save library - search, labeling, notes, collections, and export to Notion/CSV/Markdown, all from inside your AI workflow. The remote connector adds search by meaning.
 
 [![npm version](https://img.shields.io/npm/v/readdit-later-mcp)](https://www.npmjs.com/package/readdit-later-mcp)
 [![Smithery](https://smithery.ai/badge/readdit-later/mcp-server)](https://smithery.ai/server/readdit-later/mcp-server)
@@ -85,7 +85,7 @@ The local server connects to the Chrome extension via WebSocket for live data, w
 | `remove_label` | Remove a label from posts |
 | `mark_read` | Mark posts as read/unread |
 | `add_note` | Add a personal note to posts |
-| `delete_posts` | Delete saved posts permanently |
+| `delete_posts` | Remove posts from your Readdit Later library (does not unsave them on Reddit) |
 | `create_collection` | Create a new reading collection |
 | `add_to_collection` | Add posts to a collection |
 | `remove_from_collection` | Remove posts from a collection |
@@ -134,7 +134,7 @@ The remote server connects directly to your synced library in the cloud via a pr
 
 - Remote connections use a private, revocable link with 90-day token rotation
 - Local MCP runs entirely on your machine - no data leaves your device unless you export
-- No Reddit API keys required - the extension handles authentication via OAuth
+- No Reddit API keys or passwords - the extension reads your saves through your own logged-in Reddit session
 - Your data is never shared with other users or used for training
 
 ## Links
