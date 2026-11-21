@@ -133,8 +133,8 @@ The remote server connects directly to your synced library in the cloud via a pr
 ## Privacy
 
 - Remote connections use a private, revocable link with 90-day token rotation
-- Local MCP runs entirely on your machine - no data leaves your device unless you export
-- No Reddit API keys or passwords - the extension reads your saves through your own logged-in Reddit session
+- Local MCP keeps your saves on your machine. The only thing sent out is the text of a topic search question, which goes to the Readdit Later server (without your username, not stored) for AI query expansion; matching and ranking run locally
+- Read-only: it never posts, unsaves or changes anything on your Reddit account
 - Your data is never shared with other users or used for training
 
 ## Links
