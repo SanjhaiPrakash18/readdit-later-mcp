@@ -8,6 +8,8 @@ Most Reddit MCP servers browse public subreddits. This one connects to **your** 
 [![Smithery](https://smithery.ai/badge/readdit-later/mcp-server)](https://smithery.ai/server/readdit-later/mcp-server)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
+[![SanjhaiPrakash18/readdit-later-mcp MCP server](https://glama.ai/mcp/servers/SanjhaiPrakash18/readdit-later-mcp/badges/score.svg)](https://glama.ai/mcp/servers/SanjhaiPrakash18/readdit-later-mcp)
+
 ## Two connection modes
 
 ### Remote MCP (Claude web, desktop, mobile)
